@@ -1,0 +1,8 @@
+# ssh iptables fragment using ipt_recent to build dynamic block list.
+
+# Create a new chaing before INPUT SUL rule
+-N SSHSCAN
+-I INPUT 1 -p tcp --dport 22 -m state --state NEW -j SSHSCAN
+-A SSHSCAN -m recent --update --seconds <%= ssh_lock_secs %> --hitcount <%= ssh_lock_count %> --name SSH -j LOG --log-level debug --log-prefix "SSH SCAN blocked: "
+-A SSHSCAN -m recent --update --seconds <%= ssh_lock_secs %> --hitcount <%= ssh_lock_count %> --name SSH -j DROP
+-A SSHSCAN -m recent --set --name SSH -j ACCEPT

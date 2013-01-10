@@ -1,0 +1,5 @@
+# allow samba connections from our network range
+<% port_ranges.each do |range| -%>
+-A SUL -s <%= range -%> -p tcp -m multiport --dports 139,445 --syn -j ACCEPT
+-A SUL -s <%= range -%> -p udp -m multiport --dports 137,138       -j ACCEPT
+<% end -%>
