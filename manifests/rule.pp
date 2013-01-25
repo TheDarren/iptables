@@ -17,19 +17,23 @@
 # Multiple ports, multiple sources, and multiple protocols can be specified.
 # If only one is given, the [] brackets are optional.  Description (optional)
 # is used to generate a comment at the top of the file and has no other
-# semantic meaning.
+# semantic meaning. 
 #
-# Protocol and port are required.  Source is optional; if omitted, connections
-# from any source are allowed.  The default target is ACCEPT.
+# Protocol is required.  Source and port are optional; if omitted, connections
+# from any source or port are allowed.  Omitting source AND port is not
+# allowed. The default target is ACCEPT.
 
 define iptables::rule(
     $ensure      = 'present',
     $description = '',
     $source      = '',
-    $port,
+    $port        = '',
     $protocol,
     $target      = 'ACCEPT'
 ) {
+    if ($source == '' and $port == '') {
+        fail "Iptables::Rule[$name] - you cannot omit both source and port"
+    }
     file { "/etc/iptables.d/${name}":
         ensure  => $ensure,
         content => template('iptables/rule.erb'),

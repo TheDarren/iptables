@@ -1,11 +1,12 @@
 <%# Generic iptables rule template used by iptables::rule. -%>
 # <%= name %><% if description != '' then %> -- <%= description %><% end %>
-<% [port].flatten.each do |p|                -%>
+<% [port].flatten.each do |pt|               -%>
+<%   p = (pt != '') ? '--dport ' + pt : ''   -%>
 <%   [source].flatten.each do |src|          -%>
 <%     [protocol].flatten.each do |pr|       -%>
 <%       syn = (pr == 'tcp') ? ' --syn' : '' -%>
 <%       s = (src != '') ? ' -s ' + src : '' -%>
--A INPUT<%= s %> -p <%= pr %> --dport <%= p %><%= syn %> -j <%= target %>
+-A INPUT<%= s %> -p <%= pr %> <%= p %><%= syn %> -j <%= target %>
 <%     end -%>
 <%   end -%>
 <% end -%>
